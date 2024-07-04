@@ -13,6 +13,7 @@ interface Contato{
 }
 
 import agenda from './agenda.json'
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ import agenda from './agenda.json'
     ContainerComponent, 
     CabecalhoComponent, 
     SeparadorComponent,
-    ContatosComponent],
+    ContatosComponent,
+    FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -31,8 +33,23 @@ export class AppComponent {
   alfabeto: string ='abcdefghijklmnopqrstuvxwyz'
   contato:Contato[] = agenda;
 
+  filtroPorTexto: string = ''
+
+  private removerAcentos(texto: string ):string{
+    return texto.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+
+  }
+  filtrarContatosPorTexto(): Contato[]{
+    if(!this.filtroPorTexto){
+      return this.contato;
+    }
+    return this.contato.filter(contato => {
+      return this.removerAcentos(contato.nome).toLowerCase().includes(this.removerAcentos(this.filtroPorTexto.normalize().toLowerCase()));
+    })
+  }
+
   filtrarContatosPorLetraInicial(letra:string) :Contato[]{
-    return this.contato.filter ( contato => {
+    return this.filtrarContatosPorTexto().filter ( contato => {
       return contato.nome.toLowerCase().startsWith(letra);
     })
     
