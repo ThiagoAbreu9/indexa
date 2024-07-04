@@ -11,6 +11,9 @@ interface Contato{
   nome : string;
   telefone : string;
 }
+
+import agenda from './agenda.json'
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -26,5 +29,12 @@ interface Contato{
 })
 export class AppComponent {
   alfabeto: string ='abcdefghijklmnopqrstuvxwyz'
+  contato:Contato[] = agenda;
 
+  filtrarContatosPorLetraInicial(letra:string) :Contato[]{
+    return this.contato.filter ( contato => {
+      return contato.nome.toLowerCase().startsWith(letra);
+    })
+    
+  }
 }
